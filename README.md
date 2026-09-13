@@ -128,7 +128,7 @@ Codex-Control-Center-Setup-*.exe
 for a normal installation, or:
 
 ```text
-Codex-Control-Center-*-portable.exe
+Codex-Control-Center-Portable-*.exe
 ```
 
 for the portable version.
@@ -244,8 +244,8 @@ The repository includes a GitHub Actions release workflow under:
 To create a release:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 The release workflow can build platform packages and attach them to the GitHub Release.
