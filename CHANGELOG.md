@@ -9,6 +9,8 @@
 - Candidate session mtimes are refreshed on every monitor tick so the active session switches cleanly without stale 5-second windows.
 - Added regression tests for Codex turn lifecycle parsing.
 - Renamed the interrupted status label from `STOPPED` to `INTERRUPTED` for clarity.
+- Fixed Windows packaging so Setup and Portable builds use distinct filenames.
+- Cleaned GitHub Releases so only user-facing installers/packages are attached.
 
 ## 1.0.0
 
