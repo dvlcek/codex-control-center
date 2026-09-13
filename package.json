@@ -21,7 +21,6 @@
   "build": {
     "appId": "io.codexcontrolcenter.desktop",
     "productName": "Codex Control Center",
-    "artifactName": "Codex-Control-Center-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "directories": {
       "output": "release"
@@ -61,6 +60,7 @@
       ]
     },
     "nsis": {
+      "artifactName": "Codex-Control-Center-Setup-${version}-${arch}.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
@@ -68,7 +68,11 @@
       "shortcutName": "Codex Control Center",
       "deleteAppDataOnUninstall": false
     },
+    "portable": {
+      "artifactName": "Codex-Control-Center-Portable-${version}-${arch}.${ext}"
+    },
     "mac": {
+      "artifactName": "Codex-Control-Center-${version}-mac-${arch}.${ext}",
       "icon": "assets/icon.png",
       "category": "public.app-category.developer-tools",
       "target": [
@@ -77,6 +81,7 @@
       ]
     },
     "linux": {
+      "artifactName": "Codex-Control-Center-${version}-linux-${arch}.${ext}",
       "icon": "assets/icon.png",
       "category": "Development",
       "target": [

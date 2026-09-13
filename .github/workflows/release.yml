@@ -42,7 +42,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: codex-control-center-${{ matrix.name }}
-          path: release/*
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+            release/*.AppImage
           if-no-files-found: error
 
   github-release:
