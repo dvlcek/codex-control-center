@@ -1,97 +1,245 @@
 # Codex Control Center
 
-A small, local-first desktop companion for monitoring Codex sessions while you work.
+**A lightweight desktop companion for OpenAI Codex.**
+
+Monitor your active Codex session, context usage, recent activity and output without constantly switching windows.
 
 > Unofficial community project. Not affiliated with, endorsed by, or sponsored by OpenAI.
 
-## What it does
+## Download
 
-- Shows the latest local Codex task, phase and elapsed time.
-- Displays context and rate-limit usage when those values are available in local Codex session logs.
-- Shows recent task activity and the last completed response.
-- Copies the latest Codex output or the current Git diff.
-- Sends a follow-up to the same Codex thread, or queues it until the current turn finishes.
-- Supports compact mode and always-on-top mode.
-- Lives in the system tray and can be toggled with `Ctrl+Alt+C` (`Cmd+Alt+C` on macOS).
-- Can optionally start hidden at login.
-- Works without VS Code by reading local Codex session data directly.
+### [Download the latest release](../../releases/latest)
 
-## Optional VS Code bridge
+**Windows**
 
-The desktop app does **not** require the bridge.
+* **Setup `.exe`** — recommended for most users
+* **Portable `.exe`** — run without installation
 
-The optional bridge only provides:
+The application is currently unsigned, so Windows SmartScreen may display an **Unknown publisher** warning.
 
-- more accurate workspace matching;
-- the active filename;
-- the **Open Codex** button.
+---
 
-The bridge **never starts the desktop app automatically**. Install or remove it from **Settings → Optional integration**. After installing or removing it, reload VS Code once.
+## Why Codex Control Center?
 
-## Install for normal users
+Codex works well inside your development workflow, but it can be difficult to see what is happening while a task is running.
 
-Download the build for your platform from GitHub Releases.
+Codex Control Center gives you a small desktop window that stays out of the way while showing the information you actually need.
+
+It can sit next to VS Code, Cursor, your browser, terminal, or any other development environment.
+
+---
+
+## Features
+
+* Monitor the latest local Codex task
+* See the current task phase and elapsed time
+* Monitor context usage when available
+* View rate-limit information when available
+* See recent Codex activity
+* View the latest completed response
+* Copy the latest Codex output
+* Copy the current Git diff
+* Send a follow-up to the same Codex thread
+* Queue follow-ups while Codex is still working
+* Compact mode
+* Always-on-top mode
+* System tray support
+* Optional launch at login
+* Completion notifications
+* Custom Codex data directory
+* Optional VS Code integration
+* No account required
+* No telemetry
+* No cloud backend
+
+---
+
+## Quick controls
+
+| Action                     | Shortcut         |
+| -------------------------- | ---------------- |
+| Show / hide Control Center | `Ctrl + Alt + C` |
+| Show / hide on macOS       | `Cmd + Alt + C`  |
+
+You can also control the app from the system tray.
+
+---
+
+## Local-first
+
+Codex Control Center is designed to work locally.
+
+The application reads Codex session information from the local Codex data directory, normally:
+
+```text
+~/.codex
+```
+
+There is:
+
+* no analytics;
+* no telemetry;
+* no remote database;
+* no Codex session upload;
+* no Codex account login handled by this app.
+
+Your Codex data stays on your machine.
+
+---
+
+## Optional VS Code integration
+
+**VS Code is not required.**
+
+Codex Control Center can monitor Codex directly from local session data.
+
+The optional VS Code bridge adds:
+
+* more accurate workspace detection;
+* active filename information;
+* the **Open Codex** action.
+
+You can install or remove it directly from:
+
+```text
+Settings → Optional integration
+```
+
+The bridge **does not automatically start Codex Control Center when VS Code starts.**
+
+After installing or removing the bridge, reload VS Code once.
+
+---
+
+## Installation
 
 ### Windows
 
-Use the NSIS installer for a normal installation. A portable `.exe` is also produced.
+Go to:
+
+**[Latest Release](../../releases/latest)**
+
+Download either:
+
+```text
+Codex-Control-Center-Setup-*.exe
+```
+
+for a normal installation, or:
+
+```text
+Codex-Control-Center-*-portable.exe
+```
+
+for the portable version.
+
+The Setup version is recommended for most users.
 
 ### macOS
 
-Use the `.dmg` build.
+When a macOS build is available, use the `.dmg` package from GitHub Releases.
 
 ### Linux
 
-Use the `.AppImage` build.
+When a Linux build is available, use the `.AppImage` package from GitHub Releases.
 
-The project is currently unsigned. Windows SmartScreen or macOS Gatekeeper may therefore show a warning until official code signing is configured.
+> Builds are currently unsigned. Windows SmartScreen or macOS Gatekeeper may therefore display a warning.
+
+---
+
+## Settings
+
+Codex Control Center includes settings for:
+
+* Launch at login
+* Completion notifications
+* Close to tray
+* Custom Codex data directory
+* Codex CLI diagnostics
+* Optional VS Code bridge
+* Quit Codex Control Center
+
+**Launch at login is disabled by default.**
+
+---
 
 ## Run from source
 
-Requirements:
+### Requirements
 
-- Node.js 24+
-- Codex CLI installed and available in `PATH`
-- Git, if you want to use **Copy Git changes**
+* Node.js 24+
+* Codex CLI installed
+* Git for Git-related functionality
+
+Clone the repository:
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/dvlcek/codex-control-center.git
 cd codex-control-center
+```
+
+Install dependencies:
+
+```bash
 npm install
+```
+
+Verify the project:
+
+```bash
 npm run verify
+```
+
+Start the application:
+
+```bash
 npm start
 ```
 
-## Build locally
+---
+
+## Build
+
+Install dependencies first:
 
 ```bash
 npm install
 npm run verify
 ```
 
-Windows:
+### Windows
 
 ```bash
 npm run dist:win
 ```
 
-macOS:
+### macOS
 
 ```bash
 npm run dist:mac
 ```
 
-Linux:
+### Linux
 
 ```bash
 npm run dist:linux
 ```
 
-Build artifacts are written to `release/`.
+Build artifacts are written to:
+
+```text
+release/
+```
+
+---
 
 ## GitHub Releases
 
-The workflow in `.github/workflows/release.yml` builds Windows, macOS and Linux artifacts.
+The repository includes a GitHub Actions release workflow under:
+
+```text
+.github/workflows/release.yml
+```
 
 To create a release:
 
@@ -100,71 +248,104 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-GitHub Actions will build the platform packages and attach them to the GitHub release.
+The release workflow can build platform packages and attach them to the GitHub Release.
 
-## Local data and privacy
+---
 
-Codex Control Center is local-first. It reads session information from the user's local Codex data directory, normally:
+## Privacy
 
-```text
-~/.codex
-```
-
-The optional VS Code bridge writes a small local workspace-state file under:
+The optional VS Code bridge stores a small workspace-state file locally under:
 
 ```text
 ~/.codex-control-center/bridge/vscode.json
 ```
 
-App preferences are stored in Electron's normal per-user application-data directory.
+Application preferences are stored using Electron's standard per-user application data directory.
 
-The application does not include analytics, telemetry or a remote backend.
+Codex Control Center does not include its own remote backend.
 
-## Settings
+---
 
-The Settings panel includes:
+## Security
 
-- launch at login;
-- completion notifications;
-- close-to-tray behavior;
-- custom Codex data directory;
-- Codex CLI diagnostics;
-- optional VS Code bridge installation/removal;
-- explicit **Quit Codex Control Center** action.
+The Electron renderer uses:
 
-`Launch at login` is off by default and is only available in packaged Windows/macOS builds.
+```text
+contextIsolation: true
+nodeIntegration: false
+sandbox: true
+```
 
-## Security model
+The application also uses:
 
-The Electron renderer runs with:
+* a restrictive Content Security Policy;
+* a narrow preload IPC interface;
+* denied renderer permission requests;
+* blocked popup windows;
+* blocked non-local renderer navigation.
 
-- `contextIsolation: true`
-- `nodeIntegration: false`
-- `sandbox: true`
-- restrictive Content Security Policy
-- a narrow preload IPC API
-- denied renderer permission requests
-- denied popup windows and non-local navigation
+Follow-up prompts are executed through the locally installed Codex CLI.
 
-Follow-up prompts are executed through the local Codex CLI. On Windows the prompt is passed to PowerShell through a temporary file rather than interpolated into a shell command.
+On Windows, prompts are passed to PowerShell through a temporary file instead of being interpolated directly into a shell command.
+
+For security issues, see [`SECURITY.md`](SECURITY.md).
+
+---
 
 ## Project structure
 
 ```text
 .
-├── assets/                 App icons
+├── assets/
 ├── scripts/
-│   ├── runner.ps1          Safe Windows Codex follow-up runner
-│   └── verify.js           Source verification
+│   ├── runner.ps1
+│   └── verify.js
+│
 ├── src/
-│   ├── main.js             Electron main process
-│   ├── preload.js          Narrow renderer bridge
-│   ├── session-monitor.js  Local Codex session parser
-│   └── renderer/           UI
-├── vscode-bridge/          Optional VS Code integration
-└── .github/workflows/      Cross-platform release build
+│   ├── main.js
+│   ├── preload.js
+│   ├── session-monitor.js
+│   └── renderer/
+│
+├── vscode-bridge/
+├── .github/
+│   └── workflows/
+│
+├── README.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── LICENSE
 ```
+
+---
+
+## Contributing
+
+Contributions, bug reports and feature suggestions are welcome.
+
+If you find a bug, open an issue with:
+
+* your operating system;
+* Codex Control Center version;
+* what you expected to happen;
+* what actually happened;
+* reproduction steps where possible.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for more information.
+
+---
+
+## Disclaimer
+
+Codex Control Center is an independent open-source community project.
+
+It is **not an official OpenAI product** and is not affiliated with, endorsed by, or sponsored by OpenAI.
+
+Codex and OpenAI are trademarks of their respective owners.
+
+---
 
 ## License
 
-MIT. See `LICENSE`.
+Released under the [MIT License](LICENSE).
