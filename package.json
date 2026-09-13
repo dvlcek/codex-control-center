@@ -1,0 +1,87 @@
+{
+  "name": "codex-control-center",
+  "version": "1.0.0",
+  "description": "A lightweight desktop companion for monitoring local Codex sessions, usage and follow-ups.",
+  "main": "src/main.js",
+  "license": "MIT",
+  "author": "Codex Control Center contributors",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "verify": "node scripts/verify.js",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win nsis portable --x64",
+    "dist:mac": "electron-builder --mac dmg zip --x64 --arm64",
+    "dist:linux": "electron-builder --linux AppImage --x64"
+  },
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.7"
+  },
+  "build": {
+    "appId": "io.codexcontrolcenter.desktop",
+    "productName": "Codex Control Center",
+    "artifactName": "Codex-Control-Center-${version}-${os}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "scripts/runner.ps1",
+      "package.json",
+      "LICENSE"
+    ],
+    "extraResources": [
+      {
+        "from": "scripts/runner.ps1",
+        "to": "runner.ps1"
+      },
+      {
+        "from": "vscode-bridge",
+        "to": "vscode-bridge"
+      }
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Codex Control Center",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "icon": "assets/icon.png",
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "category": "Development",
+      "target": [
+        "AppImage"
+      ]
+    }
+  }
+}

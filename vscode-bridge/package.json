@@ -1,0 +1,26 @@
+{
+  "name": "codex-control-center-bridge",
+  "displayName": "Codex Control Center Bridge",
+  "description": "Optional local VS Code integration for Codex Control Center. It never starts the desktop app automatically.",
+  "version": "1.0.0",
+  "publisher": "codexcontrolcenter",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished", "onUri"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codexControlCenter.openCodex",
+        "title": "Codex Control Center: Open Codex"
+      },
+      {
+        "command": "codexControlCenter.refreshBridge",
+        "title": "Codex Control Center: Refresh Workspace Bridge"
+      }
+    ]
+  }
+}

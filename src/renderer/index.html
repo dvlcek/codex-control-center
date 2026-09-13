@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" />
+  <title>Codex Control Center</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="titlebar drag-region">
+      <div class="brand no-drag">
+        <div class="brand-mark" aria-hidden="true">C</div>
+        <div class="brand-copy">
+          <div class="brand-title">CODEX CONTROL</div>
+          <div id="projectName" class="brand-subtitle">Waiting for Codex</div>
+        </div>
+      </div>
+
+      <div class="title-actions no-drag">
+        <div class="toolbar-group" aria-label="Codex actions">
+          <button id="copyOutputBtn" class="icon-btn" title="Copy last Codex output" aria-label="Copy last Codex output">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="7" width="10" height="12" rx="2"></rect><path d="M15 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"></path></svg>
+          </button>
+          <button id="copyChangesBtn" class="icon-btn" title="Copy Git changes" aria-label="Copy Git changes">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="7" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M6 7v10M8 10c5 0 4-3 8-3"></path></svg>
+          </button>
+          <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Open settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path></svg>
+          </button>
+          <button id="compactBtn" class="icon-btn" title="Compact mode" aria-label="Toggle compact mode" aria-pressed="false">
+            <svg class="icon-expand" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16"></path></svg>
+            <svg class="icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="16" height="10" rx="2"></rect><path d="m9 12 3-3 3 3"></path></svg>
+          </button>
+          <button id="pinBtn" class="icon-btn" title="Always on top" aria-label="Toggle always on top" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pin-fill" d="M9 3h6l-1 5 3 3v2h-4l-1 8-1-8H7v-2l3-3-1-5Z"></path></svg>
+          </button>
+        </div>
+
+        <div class="toolbar-separator"></div>
+
+        <div class="window-controls">
+          <button id="minBtn" class="icon-btn window-btn" title="Minimize" aria-label="Minimize">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"></path></svg>
+          </button>
+          <button id="closeBtn" class="icon-btn window-btn close-window" title="Hide to tray" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8 8 8M16 8l-8 8"></path></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="task-card panel">
+        <div class="row between task-top-row">
+          <div id="statusPill" class="status-pill idle"><span class="dot"></span><span id="statusText">IDLE</span></div>
+          <div id="elapsed" class="mono timer">00:00</div>
+        </div>
+
+        <div class="task-copy">
+          <h1 id="taskTitle">No active Codex task</h1>
+          <div class="phase-row"><span class="phase-label">CURRENT</span><span id="phaseText" class="phase">Waiting for Codex</span></div>
+        </div>
+
+        <div id="liveProgress" class="live-progress idle"><div class="live-progress-fill"></div></div>
+        <div class="compact-metrics">
+          <span><b id="compactContext">—</b><small>context</small></span><i></i>
+          <span><b id="compact5h">—</b><small>5h left</small></span><i></i>
+          <span><b id="compact7d">—</b><small>7d left</small></span>
+        </div>
+      </section>
+
+      <section class="panel usage-panel expanded-only">
+        <div class="section-heading"><span>USAGE</span><span id="bridgeState" class="bridge-state">STANDALONE</span></div>
+        <div class="context-block">
+          <div class="context-copy"><span class="metric-label">Context remaining</span><div class="context-value"><span id="contextPct" class="metric-big">—</span><span class="metric-unit">%</span></div></div>
+          <div class="context-progress"><div class="progress-meta"><span>Available</span><span id="contextTokenInline">—</span></div><div class="progress-wrap"><div id="contextBar" class="progress-bar"></div></div></div>
+        </div>
+        <div class="usage-grid">
+          <div class="metric"><span class="metric-label">Context tokens</span><strong id="sessionTokens">—</strong></div>
+          <div class="metric"><span class="metric-label">Session output</span><strong id="outputTokens">—</strong></div>
+          <div class="metric"><span class="metric-label">5h left</span><strong id="primaryLimit">—</strong></div>
+          <div class="metric"><span class="metric-label">7d left</span><strong id="secondaryLimit">—</strong></div>
+        </div>
+      </section>
+
+      <section class="panel activity-panel expanded-only">
+        <div class="section-heading"><span>ACTIVITY</span><span id="activeFile" class="file-name"></span></div>
+        <div id="activityList" class="activity-list"><div class="empty">No activity yet</div></div>
+      </section>
+
+      <section class="panel result-panel expanded-only">
+        <div class="section-heading"><span>LAST COMPLETE</span><span id="resultTime" class="mono tiny">—</span></div>
+        <div id="resultText" class="result-text">Nothing completed in this session yet.</div>
+      </section>
+
+      <section class="composer panel expanded-only">
+        <div id="queueBadge" class="queue-badge hidden">Queued after current task</div>
+        <textarea id="promptInput" rows="2" maxlength="100000" placeholder="Follow up with Codex…  Ctrl+Enter"></textarea>
+        <div class="composer-footer">
+          <span id="sendHint" class="send-hint">Queues automatically while Codex is busy.</span>
+          <div class="composer-actions">
+            <button id="openCodexBtn" class="secondary-btn">Open Codex</button>
+            <button id="clearQueueBtn" class="secondary-btn hidden">Clear</button>
+            <button id="sendBtn" class="primary-btn">Send</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section id="settingsPanel" class="settings-overlay hidden" aria-label="Settings">
+    <div class="settings-header">
+      <div>
+        <div class="settings-eyebrow">CODEX CONTROL CENTER</div>
+        <h2>Settings</h2>
+      </div>
+      <button id="settingsCloseBtn" class="icon-btn" title="Close settings" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8 8 8M16 8l-8 8"></path></svg>
+      </button>
+    </div>
+
+    <div class="settings-scroll">
+      <div class="settings-section">
+        <div class="settings-section-title">BEHAVIOR</div>
+        <label class="setting-row">
+          <span><strong>Launch at login</strong><small>Start hidden in the tray when you sign in.</small></span>
+          <input id="launchAtLoginToggle" type="checkbox" />
+        </label>
+        <label class="setting-row">
+          <span><strong>Completion notifications</strong><small>Notify when an active Codex turn finishes.</small></span>
+          <input id="notificationsToggle" type="checkbox" />
+        </label>
+        <label class="setting-row">
+          <span><strong>Close to tray</strong><small>The X button hides the app instead of quitting.</small></span>
+          <input id="closeToTrayToggle" type="checkbox" />
+        </label>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">CODEX</div>
+        <div class="integration-card">
+          <div class="integration-top"><div><strong>Local Codex data</strong><small id="codexHomeValue">—</small></div><span id="codexHomeStatus" class="status-chip">CHECKING</span></div>
+          <div class="integration-actions"><button id="chooseCodexHomeBtn" class="secondary-btn">Choose folder</button><button id="resetCodexHomeBtn" class="ghost-btn">Use default</button></div>
+        </div>
+        <div class="diagnostic-line"><span>Codex CLI</span><b id="codexCliStatus">Checking…</b></div>
+        <div class="diagnostic-line"><span>Global shortcut</span><b id="hotkeyValue">Ctrl+Alt+C</b></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">OPTIONAL INTEGRATION</div>
+        <div class="integration-card">
+          <div class="integration-top"><div><strong>VS Code bridge</strong><small>Improves workspace matching and enables “Open Codex”. It never launches this app.</small></div><span id="bridgeInstallStatus" class="status-chip">NOT INSTALLED</span></div>
+          <div class="integration-actions"><button id="installBridgeBtn" class="secondary-btn">Install / update</button><button id="removeBridgeBtn" class="ghost-btn">Remove</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section settings-about">
+        <div class="settings-section-title">ABOUT</div>
+        <div class="diagnostic-line"><span>Version</span><b id="appVersion">—</b></div>
+        <div class="diagnostic-line"><span>Mode</span><b id="appMode">—</b></div>
+        <p>Local-first desktop companion. Session monitoring reads your local Codex data and does not require the VS Code bridge.</p>
+        <button id="quitAppBtn" class="danger-btn">Quit Codex Control Center</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>
