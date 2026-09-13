@@ -178,21 +178,41 @@ function parseSession(file, indexTitle) {
         phase = 'Error';
         addActivity('Error', ts);
       } else if (t === 'task_complete' || t === 'turn_complete' || t === 'turn_completed') {
-        const fullMessage = p.last_agent_message || lastAgentMessage || '';
-        lastCompleted = {
-          turnId: p.turn_id || p.turnId || '',
-          message: fullMessage,
-          completedAt: p.completed_at ? p.completed_at * 1000 : (ts ? Date.parse(ts) : Date.now()),
-          durationMs: p.duration_ms || null,
-          error: lastError || ''
-        };
-        status = lastError ? 'failed' : 'completed';
-        phase = lastError ? 'Failed' : 'Done';
-        addActivity(lastError ? 'Task failed' : 'Task completed', ts);
+        const terminalTurnId = p.turn_id || p.turnId || '';
+        const belongsToCurrentTurn = !terminalTurnId || !currentTurnId || terminalTurnId === currentTurnId;
+
+        // Codex can persist delayed terminal events from older turns. Never let an
+        // old task_complete overwrite the state of a newer turn that is running.
+        if (belongsToCurrentTurn) {
+          const fullMessage = p.last_agent_message || lastAgentMessage || '';
+          const terminalError = typeof p.error === 'string'
+            ? p.error
+            : (p.error?.message || '');
+          const failed = Boolean(terminalError);
+
+          lastCompleted = {
+            turnId: terminalTurnId || currentTurnId || '',
+            message: fullMessage,
+            completedAt: p.completed_at ? p.completed_at * 1000 : (ts ? Date.parse(ts) : Date.now()),
+            durationMs: p.duration_ms || null,
+            error: terminalError || ''
+          };
+          status = failed ? 'failed' : 'completed';
+          phase = failed ? 'Failed' : 'Done';
+          lastError = terminalError || '';
+          addActivity(failed ? 'Task failed' : 'Task completed', ts);
+        }
       } else if (t === 'turn_aborted' || t === 'turn_interrupted' || t === 'interrupted') {
-        status = 'interrupted';
-        phase = 'Interrupted';
-        addActivity('Task interrupted', ts);
+        const terminalTurnId = p.turn_id || p.turnId || '';
+        const belongsToCurrentTurn = !terminalTurnId || !currentTurnId || terminalTurnId === currentTurnId;
+
+        // Same rule as completion: an abort belonging to an older turn must not
+        // mark a newer active turn as stopped.
+        if (belongsToCurrentTurn) {
+          status = 'interrupted';
+          phase = 'Interrupted';
+          addActivity('Task interrupted', ts);
+        }
       } else {
         const mapped = mapPhase(t, p, rec.type);
         if (mapped) {
@@ -202,23 +222,25 @@ function parseSession(file, indexTitle) {
       }
     } else if (rec.type === 'response_item') {
       const p = rec.payload || {};
-      const mapped = mapPhase(p.type, p, rec.type);
-      if (mapped) {
-        phase = mapped;
-        addActivity(mapped, rec.timestamp || null);
-      }
-      if (p.type === 'function_call') {
-        const n = p.name || p.tool_name || 'tool';
-        phase = `Using ${n}`;
+
+      // response_item records can be flushed after a terminal event. They are
+      // useful for activity while a turn is active, but must not change a final
+      // Done/Interrupted/Failed phase back into "Using tool" afterwards.
+      if (status === 'running' || status === 'idle') {
+        const mapped = mapPhase(p.type, p, rec.type);
+        if (mapped) {
+          phase = mapped;
+          addActivity(mapped, rec.timestamp || null);
+        }
+        if (p.type === 'function_call') {
+          const n = p.name || p.tool_name || 'tool';
+          phase = `Using ${n}`;
+        }
       }
     }
   }
 
   const stat = fs.statSync(file);
-  if (status !== 'running' && Date.now() - stat.mtimeMs < 3500 && !lastCompleted) {
-    status = 'running';
-    phase = phase === 'Idle' ? 'Working' : phase;
-  }
 
   const total = usage?.total_token_usage || null;
   const last = usage?.last_token_usage || null;
@@ -312,15 +334,23 @@ class SessionMonitor {
   }
 
   getCandidates() {
+    // Discover new rollout files at a low frequency, but refresh mtimes for all
+    // known candidates on every snapshot. Updating only candidate[0] can leave
+    // an older session pinned for ~5 seconds and make the UI bounce between two
+    // sessions from the same workspace.
     if (Date.now() - this.candidatesAt > 5000 || !this.cachedCandidates.length) {
       this.cachedCandidates = listRollouts(path.join(this.codexHome, 'sessions'));
       this.candidatesAt = Date.now();
-    } else if (this.cachedCandidates[0]) {
-      try {
-        const s = fs.statSync(this.cachedCandidates[0].file);
-        this.cachedCandidates[0].mtimeMs = s.mtimeMs;
-        this.cachedCandidates[0].size = s.size;
-      } catch {}
+    } else {
+      const refreshed = [];
+      for (const candidate of this.cachedCandidates) {
+        try {
+          const stat = fs.statSync(candidate.file);
+          refreshed.push({ ...candidate, mtimeMs: stat.mtimeMs, size: stat.size });
+        } catch {}
+      }
+      refreshed.sort((a, b) => b.mtimeMs - a.mtimeMs);
+      this.cachedCandidates = refreshed;
     }
     return this.cachedCandidates;
   }

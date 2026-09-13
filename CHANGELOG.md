@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed session status flickering between running, done and interrupted states.
+- Terminal events now affect only the Codex turn they belong to by matching `turn_id`.
+- Delayed completion/abort events from older turns can no longer overwrite a newer active turn.
+- Late `response_item` records can no longer replace a final Done/Interrupted/Failed phase.
+- Candidate session mtimes are refreshed on every monitor tick so the active session switches cleanly without stale 5-second windows.
+- Added regression tests for Codex turn lifecycle parsing.
+- Renamed the interrupted status label from `STOPPED` to `INTERRUPTED` for clarity.
+
 ## 1.0.0
 
 - Converted the project from a VS Code-started helper into a standalone desktop application.

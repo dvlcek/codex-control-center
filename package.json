@@ -1,6 +1,6 @@
 {
   "name": "codex-control-center",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight desktop companion for monitoring local Codex sessions, usage and follow-ups.",
   "main": "src/main.js",
   "license": "MIT",

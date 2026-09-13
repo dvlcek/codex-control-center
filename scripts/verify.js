@@ -36,7 +36,9 @@ for (const rel of [
 }
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-if (pkg.version !== '1.0.0') throw new Error('Expected package version 1.0.0');
+if (pkg.version !== '1.0.1') throw new Error('Expected package version 1.0.1');
 if (pkg.build?.appId !== 'io.codexcontrolcenter.desktop') throw new Error('Unexpected appId');
 
-console.log('Verification PASS: required files present and JavaScript syntax is valid.');
+execFileSync(process.execPath, [path.join(root, 'scripts', 'test-session-monitor.js')], { stdio: 'inherit' });
+
+console.log('Verification PASS: required files present, JavaScript syntax is valid and session lifecycle tests passed.');

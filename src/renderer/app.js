@@ -29,7 +29,7 @@ function fmtTime(ts) {
 }
 
 function statusLabel(status) {
-  const map = { running: 'RUNNING', completed: 'DONE', failed: 'FAILED', interrupted: 'STOPPED', idle: 'IDLE' };
+  const map = { running: 'RUNNING', completed: 'DONE', failed: 'FAILED', interrupted: 'INTERRUPTED', idle: 'IDLE' };
   return map[status] || String(status || 'IDLE').toUpperCase();
 }
 
